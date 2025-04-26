@@ -1,1 +1,1 @@
-# newsfeed
+# newsfeed Парсинг новостей в RSS формате из habr.com
