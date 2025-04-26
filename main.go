@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"rssparser/internal/parser"
 	"rssparser/internal/storage"
 )
@@ -14,21 +15,21 @@ func main() {
 
 	news, err := habr.FetchNews()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	fmt.Printf("✅ Получено %d новостей\n", len(news))
+	log.Printf("✅ Получено %d новостей", len(news))
 
 	elastic, err := storage.NewElasticStorage("news")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	for _, item := range news {
 		if err := elastic.SaveNewsItem(item); err != nil {
-			fmt.Println("❌ Ошибка при сохранении:", err)
+			log.Println("❌ Ошибка при сохранении:", err)
 		} else {
-			fmt.Println("💾 Сохранено:", item.Title)
+			log.Println("💾 Сохранено:", item.Title)
 		}
 	}
 

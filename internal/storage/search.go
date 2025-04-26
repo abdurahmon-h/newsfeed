@@ -3,7 +3,7 @@ package storage
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"rssparser/internal/models"
 )
@@ -27,22 +27,25 @@ func SearchNews(keyword string) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
-		return fmt.Errorf("ошибка кодирования запроса: %w", err)
+		log.Printf("ошибка кодирования запроса: %v", err)
+		return err
 	}
 
 	resp, err := http.Post("http://localhost:9200/news/_search", "application/json", &buf)
 	if err != nil {
-		return fmt.Errorf("ошибка выполнения поиска: %w", err)
+		log.Printf("ошибка выполнения поиска: %w", err)
+		return err
 	}
 	defer resp.Body.Close()
 
 	var searchResp SearchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&searchResp); err != nil {
-		return fmt.Errorf("ошибка разбора ответа поиска: %w", err)
+		log.Printf("ошибка разбора ответа поиска: %w", err)
+		return err
 	}
 
 	for _, hit := range searchResp.Hits.Hits {
-		fmt.Println("🔍 Найдено:", hit.Source.Title)
+		log.Println("🔍 Найдено:", hit.Source.Title)
 	}
 
 	return nil

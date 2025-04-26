@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/google/uuid"
@@ -54,7 +54,8 @@ func (e *ElasticStorage) SaveNewsItem(item models.NewsItems) error {
 	defer res.Body.Close()
 
 	if res.IsError() {
-		return fmt.Errorf("error indexing document: %s", res.String())
+		log.Printf("error indexing document: %s", res.String())
+		return err
 	}
 
 	return nil
