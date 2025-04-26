@@ -2,8 +2,8 @@ package parser
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -34,18 +34,21 @@ type item struct {
 func (p *RSSParser) FetchNews() ([]models.NewsItems, error) {
 	resp, err := http.Get(p.FeedURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch RSS: %w", err)
+		log.Printf("failed to fetch RSS: %w", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read RSS body: %w", err)
+		log.Printf("failed to read RSS body: %w", err)
+		return nil, err
 	}
 
 	var parsed rss
 	if err := xml.Unmarshal(body, &parsed); err != nil {
-		return nil, fmt.Errorf("failed to parse RSS XML: %w", err)
+		log.Printf("failed to parse RSS XML: %w", err)
+		return nil, err
 	}
 
 	var news []models.NewsItems
