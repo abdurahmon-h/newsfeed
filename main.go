@@ -13,7 +13,7 @@ func main() {
 		Source:  "Habr",
 	}
 
-	news, err := habr.FetchNews()
+	news, err := habr.GetNews()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +33,7 @@ func main() {
 		}
 	}
 
-	query := "Как" // поиск запросов по ключевому слову
+	query := "такое" // поиск запросов по ключевому слову
 	if err := storage.SearchNews(query); err != nil {
 		fmt.Println("❌ Ошибка при поиске:", err)
 	}
