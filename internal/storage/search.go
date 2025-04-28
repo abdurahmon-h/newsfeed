@@ -8,7 +8,7 @@ import (
 	"rssparser/internal/models"
 )
 
-type SearchResponse struct {
+type SearchResponse struct { // вложенная структура ес
 	Hits struct {
 		Hits []struct {
 			Source models.NewsItems `json:"_source"`
@@ -26,12 +26,12 @@ func SearchNews(keyword string) error {
 	}
 
 	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(query); err != nil {
+	if err := json.NewEncoder(&buf).Encode(query); err != nil { // кодирование запроса в json
 		log.Printf("ошибка кодирования запроса: %v", err)
 		return err
 	}
 
-	resp, err := http.Post("http://localhost:9200/news/_search", "application/json", &buf)
+	resp, err := http.Post("http://localhost:9200/news/_search", "application/json", &buf) // отправляем запрос в ес
 	if err != nil {
 		log.Printf("ошибка выполнения поиска: %w", err)
 		return err
@@ -45,7 +45,7 @@ func SearchNews(keyword string) error {
 	}
 
 	for _, hit := range searchResp.Hits.Hits {
-		log.Println("🔍 Найдено:", hit.Source.Title)
+		log.Println("Найдено:", hit.Source.Title)
 	}
 
 	return nil

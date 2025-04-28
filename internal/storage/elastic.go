@@ -18,30 +18,30 @@ type ElasticStorage struct {
 }
 
 func NewElasticStorage(indexName string) (*ElasticStorage, error) {
-	cfg := elasticsearch.Config{
+	conf := elasticsearch.Config{ // создаем конфиг для ес
 		Addresses: []string{
 			"http://localhost:9200",
 		},
 	}
 
-	es, err := elasticsearch.NewClient(cfg)
+	esClient, err := elasticsearch.NewClient(conf) // создаем клиеента для ес
 	if err != nil {
 		return nil, err
 	}
 
 	return &ElasticStorage{
-		Client: es,
+		Client: esClient,
 		Index:  indexName,
 	}, nil
 }
 
 func (e *ElasticStorage) SaveNewsItem(item models.NewsItems) error {
-	data, err := json.Marshal(item)
+	data, err := json.Marshal(item) // конвертация айтемов в json
 	if err != nil {
 		return err
 	}
 
-	id := uuid.New().String()
+	id := uuid.New().String() // генерация ид для каждого айтема
 	res, err := e.Client.Index(
 		e.Index,
 		bytes.NewReader(data),
